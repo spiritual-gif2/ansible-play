@@ -1,0 +1,21 @@
+---
+- name: Check for available package upgrades
+  hosts: all
+  become: yes  # Use 'sudo' to run the task as root
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: List packages that would be upgraded
+      apt:
+        upgrade: dist  # dist-upgrade simulation
+      check_mode: yes  # Simulate the upgrade
+      register: upgrade_info  # Register the result to access later
+
+    - name: Display packages to be upgraded
+      debug:
+        var: upgrade_info.cache_update_time  # Display the last cache update time
+    - name: Display packages that can be upgraded
+      debug:
+        var: upgrade_info.packages  # Display the list of packages that would be upgraded
